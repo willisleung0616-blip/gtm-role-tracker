@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTM Role Tracker</title>
+<meta name="description" content="Internships, co-ops, new-grad and entry-level roles in sales, growth, marketing and GTM engineering across the US and Canada, read from each employer's own job board.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a quiet filter rail on the left, one continuous ledger of roles on the
+   right, grouped by when they dropped. Monochrome; colour is reserved for state. */
+:root{
+  color-scheme:dark;
+  --bg:#0b0b0c; --panel:#131314; --raise:#1a1a1c; --line:#242427; --line-2:#2f2f33;
+  --ink:#f3f3f1; --soft:#b9b9bd; --muted:#85858c; --faint:#56565c;
+  --on:#f3f3f1; --on-ink:#0b0b0c;
+  --new:#84e3a8; --new-bg:#12261b; --warn:#f0b561; --warn-bg:#2b2011; --good:#84e3a8; --good-bg:#12261b;
+  --display:"Bricolage Grotesque","Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --body:"Geist",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --r:14px; --r-sm:9px;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme:light;
+    --bg:#f5f5f3; --panel:#ffffff; --raise:#f0f0ed; --line:#e5e5e1; --line-2:#d6d6d1;
+    --ink:#111112; --soft:#3c3c40; --muted:#6c6c72; --faint:#a3a3a8;
+    --on:#111112; --on-ink:#ffffff;
+    --new:#0f7a45; --new-bg:#e3f4ea; --warn:#8f5600; --warn-bg:#faefdc; --good:#0f7a45; --good-bg:#e3f4ea;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme:light;
+  --bg:#f5f5f3; --panel:#ffffff; --raise:#f0f0ed; --line:#e5e5e1; --line-2:#d6d6d1;
+  --ink:#111112; --soft:#3c3c40; --muted:#6c6c72; --faint:#a3a3a8;
+  --on:#111112; --on-ink:#ffffff;
+  --new:#0f7a45; --new-bg:#e3f4ea; --warn:#8f5600; --warn-bg:#faefdc; --good:#0f7a45; --good-bg:#e3f4ea;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+
+.page{max-width:1240px;margin:0 auto;padding-inline:24px;padding-block:0 96px}
+
+/* top bar */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.01em}
+.mark{width:22px;height:22px;border-radius:6px;background:var(--on);display:grid;place-items:center}
+.mark i{width:8px;height:8px;border-radius:50%;background:var(--on-ink)}
+.status{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:13px}
+.live{display:inline-flex;align-items:center;gap:7px}
+.live i{width:7px;height:7px;border-radius:50%;background:var(--new)}
+.live.stale i{background:var(--warn)}
+.icon-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--panel);display:grid;place-items:center;color:var(--soft)}
+.icon-btn:hover{border-color:var(--line-2);color:var(--ink)}
+
+/* hero */
+.hero{padding-block:36px 30px;display:grid;gap:26px}
+h1{font:600 clamp(34px,5.4vw,60px)/1.02 var(--display);letter-spacing:-.035em;margin:0;text-wrap:balance;max-width:17ch}
+h1 em{font-style:normal;color:var(--muted)}
+.stats{display:flex;flex-wrap:wrap;gap:8px}
+.stat{display:flex;align-items:baseline;gap:9px;padding:9px 15px;border-radius:999px;border:1px solid var(--line);background:var(--panel);font-size:14px;color:var(--soft)}
+.stat b{font:500 15px var(--mono);color:var(--ink);font-variant-numeric:tabular-nums}
+.stat:hover{border-color:var(--line-2);color:var(--ink)}
+
+/* view switch */
+.views{display:inline-flex;gap:2px;padding:4px;border-radius:999px;background:var(--panel);border:1px solid var(--line);margin-bottom:22px;max-width:100%;overflow-x:auto}
+.view{border:0;background:none;padding:7px 15px;border-radius:999px;color:var(--muted);font-weight:500;font-size:14px;white-space:nowrap}
+.view:hover{color:var(--ink)}
+.view[aria-selected="true"]{background:var(--on);color:var(--on-ink)}
+.view .num{opacity:.6;margin-left:6px;font-size:12.5px}
+
+/* roles layout */
+.layout{display:grid;grid-template-columns:248px minmax(0,1fr);gap:28px;align-items:start}
+.rail{position:sticky;top:16px;display:grid;gap:22px;max-height:calc(100vh - 32px);overflow-y:auto;padding-right:4px;scrollbar-width:thin}
+.group h2{font:500 11.5px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);margin:0 0 6px}
+.opt{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:6px 8px;margin-inline:-8px;border-radius:8px;text-align:left;font-size:14px;color:var(--soft)}
+.opt:hover{background:var(--raise);color:var(--ink)}
+.opt .box{width:15px;height:15px;border-radius:4.5px;border:1.5px solid var(--line-2);flex:none;display:grid;place-items:center}
+.opt[aria-pressed="true"]{color:var(--ink)}
+.opt[aria-pressed="true"] .box{background:var(--on);border-color:var(--on)}
+.opt[aria-pressed="true"] .box::after{content:"";width:7px;height:4px;border-left:1.8px solid var(--on-ink);border-bottom:1.8px solid var(--on-ink);transform:translateY(-1px) rotate(-45deg)}
+.opt .n{margin-left:auto;font:400 12.5px var(--mono);color:var(--faint);font-variant-numeric:tabular-nums}
+.opt.zero{opacity:.45}
+select{appearance:none;width:100%;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2385858c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 12px center;border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 30px 8px 11px;font-size:14px;color:var(--soft)}
+select:hover{border-color:var(--line-2)}
+.rail .stack{display:grid;gap:8px}
+.reset{border:0;background:none;color:var(--muted);font-size:13px;padding:0;text-align:left;text-decoration:underline;text-underline-offset:3px}
+.reset:hover{color:var(--ink)}
+
+.toolbar{display:flex;gap:10px;align-items:center;margin-bottom:6px}
+.search{flex:1;min-width:0;position:relative}
+.search input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:11px 16px 11px 40px;font-size:15px}
+.search input::placeholder{color:var(--faint)}
+.search input:hover,.search input:focus{border-color:var(--line-2);outline:0}
+.search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--muted)}
+.pill-btn{border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:10px 15px;font-size:14px;color:var(--soft);white-space:nowrap}
+.pill-btn:hover{border-color:var(--line-2);color:var(--ink)}
+#openFilters{display:none}
+.meta-line{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;padding:12px 2px 4px}
+.meta-line button{border:0;background:none;color:var(--muted);font-size:13px;padding:0;text-decoration:underline;text-underline-offset:3px}
+.meta-line button:hover{color:var(--ink)}
+
+/* the ledger */
+.day{font:500 11.5px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:22px 2px 9px;display:flex;gap:10px;align-items:baseline}
+.day .num{color:var(--faint);letter-spacing:0}
+.ledger{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.row{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:14px;padding:15px 16px;border-top:1px solid var(--line);align-items:start}
+.row:first-child{border-top:0}
+.row:hover{background:var(--raise)}
+.av{width:38px;height:38px;border-radius:10px;background:var(--raise);border:1px solid var(--line);display:grid;place-items:center;font:600 14px var(--display);color:var(--soft);text-transform:uppercase}
+.row:hover .av{background:var(--panel)}
+.title{font-size:15.5px;font-weight:500;letter-spacing:-.01em;line-height:1.35;display:inline}
+.title:hover{text-decoration:underline;text-underline-offset:3px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--new);margin-right:8px;vertical-align:2px}
+.sub{color:var(--muted);font-size:13.5px;margin-top:2px;overflow-wrap:anywhere}
+.sub b{font-weight:500;color:var(--soft)}
+.sub a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.tag{font-size:12px;line-height:1;padding:5px 8px;border-radius:6px;border:1px solid var(--line);color:var(--soft);white-space:nowrap}
+.tag.level{background:var(--raise);border-color:transparent;color:var(--ink)}
+.tag.warn{background:var(--warn-bg);border-color:transparent;color:var(--warn)}
+.tag.good{background:var(--good-bg);border-color:transparent;color:var(--good)}
+.why{color:var(--faint);font-size:12.5px;margin-top:7px}
+.side{text-align:right;font-size:13px;color:var(--muted);display:grid;gap:3px;justify-items:end;white-space:nowrap}
+.side .pay{color:var(--soft);font-family:var(--mono);font-size:12.5px}
+.go{margin-top:5px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.row:hover .go{background:var(--on);border-color:var(--on);color:var(--on-ink)}
+.more{display:block;margin:18px auto 0}
+.empty{padding:56px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font:600 20px var(--display);letter-spacing:-.02em;margin-bottom:4px}
+
+/* other views */
+.lede{color:var(--muted);max-width:68ch;margin:0 0 16px}
+.table{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:11px 16px;border-top:1px solid var(--line);vertical-align:top}
+tr:first-child th{border-top:0}
+th{font:500 11.5px var(--body);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+td.num,th.num{text-align:right}
+td a:hover{text-decoration:underline;text-underline-offset:3px}
+td .muted,.muted{color:var(--muted)}
+tbody tr:hover{background:var(--raise)}
+.h2{font:600 22px var(--display);letter-spacing:-.02em;margin:34px 0 6px}
+.kv{display:grid;grid-template-columns:minmax(150px,240px) minmax(0,1fr);background:var(--panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kv>div{padding:12px 16px;border-top:1px solid var(--line)}
+.kv>div:nth-child(-n+2){border-top:0}
+.kv .k{color:var(--muted)}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:minmax(120px,230px) 1fr auto;gap:12px;align-items:center;font-size:13.5px}
+.bar i{display:block;height:6px;border-radius:3px;background:var(--line-2);min-width:2px}
+
+details.how{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;color:var(--muted);font-size:14px;max-width:76ch}
+details.how summary{cursor:pointer;color:var(--soft);font-weight:500;list-style:none}
+details.how summary::-webkit-details-marker{display:none}
+details.how summary::after{content:" +";color:var(--faint)}
+details.how[open] summary::after{content:" −"}
+details.how p{margin:12px 0 0}
+details.how b{color:var(--soft);font-weight:500}
+footer{margin-top:36px;color:var(--faint);font-size:13px}
+
+/* filter sheet on small screens */
+.scrim{display:none}
+@media (max-width:900px){
+  .page{padding-inline:16px}
+  .layout{grid-template-columns:minmax(0,1fr)}
+  #openFilters{display:block}
+  .toolbar{flex-wrap:wrap}
+  .toolbar .search{flex-basis:100%}
+  .toolbar select,.toolbar .pill-btn{flex:1}
+  .rail{position:fixed;inset:auto 0 0 0;z-index:30;background:var(--panel);border-top:1px solid var(--line-2);border-radius:20px 20px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));max-height:82vh;transform:translateY(105%);transition:transform .22s ease}
+  .rail.open{transform:none}
+  .scrim.open{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:29}
+  .rail .done{display:block}
+  .row{grid-template-columns:34px minmax(0,1fr)}
+  .av{width:34px;height:34px}
+  .side{grid-column:2;text-align:left;justify-items:start;grid-auto-flow:column;gap:12px;align-items:center}
+  .go{display:none}
+  .status .hide-s{display:none}
+  .kv{grid-template-columns:minmax(0,1fr)}
+  .kv>div:nth-child(2){border-top:1px solid var(--line)}
+  .kv .k{padding-bottom:0;border-top:1px solid var(--line)}
+  .kv .v{border-top:0;padding-top:2px}
+  .kv>div:first-child{border-top:0}
+}
+.rail .done{display:none;width:100%;border:0;border-radius:999px;background:var(--on);color:var(--on-ink);padding:12px;position:sticky;bottom:0;font-weight:600}
+@media (prefers-reduced-motion:reduce){.rail{transition:none}}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="top">
+    <a class="brand" href="#roles"><span class="mark"><i></i></span>GTM Role Tracker</a>
+    <div class="status">
+      <span class="live" id="live"><i></i><span id="updated"></span></span>
+      <button class="icon-btn" id="theme" aria-label="Switch between light and dark" title="Light or dark">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M5.3 18.7l1.5-1.5M17.2 6.8l1.5-1.5"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <header class="hero">
+    <h1 id="headline"></h1>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <nav class="views" role="tablist" id="views"></nav>
+
+  <section id="v-roles">
+    <div class="layout">
+      <aside class="rail" id="rail" aria-label="Filters">
+        <div class="group"><h2>Level</h2><div id="f-level"></div></div>
+        <div class="group"><h2>Role</h2><div id="f-family"></div></div>
+        <div class="group"><h2>Where</h2><div id="f-where"></div></div>
+        <div class="group"><h2>Company</h2><div id="f-tier"></div></div>
+        <div class="group"><h2>Visa and date</h2>
+          <div class="stack">
+            <select id="f-visa" aria-label="Visa sponsorship">
+              <option value="">Any sponsorship status</option>
+              <option value="ok">Hide "no sponsorship" roles</option>
+              <option value="offers">Sponsorship offered</option>
+              <option value="h1b">H-1B employers (US)</option>
+            </select>
+            <select id="f-age" aria-label="When it was posted">
+              <option value="">Posted any time</option>
+              <option value="1">Last 24 hours</option>
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+            </select>
+          </div>
+        </div>
+        <button class="reset" id="reset">Reset filters</button>
+        <button class="done" id="closeFilters">Show roles</button>
+      </aside>
+
+      <div>
+        <div class="toolbar">
+          <label class="search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg>
+            <input type="search" id="q" placeholder="Search a company, title or city" autocomplete="off">
+          </label>
+          <button class="pill-btn" id="openFilters">Filters</button>
+          <select id="sort" aria-label="Sort" style="width:auto;border-radius:999px;padding-block:10px">
+            <option value="new">Newest first</option>
+            <option value="company">Company A to Z</option>
+          </select>
+        </div>
+        <div class="meta-line"><span id="count"></span><button id="csv">Download as CSV</button></div>
+        <div id="list"></div>
+        <button class="pill-btn more" id="more" hidden>Show more</button>
+      </div>
+    </div>
+
+    <details class="how">
+      <summary>How roles are chosen</summary>
+      <p><b>Source.</b> Every role is read from the employer's own job board. The link goes to the employer's posting.</p>
+      <p><b>Level.</b> From the title (intern, co-op, new grad, associate, junior, SDR, BDR), or because the posting asks for two years of experience or less. "Level unclear" means neither says, so read the posting before applying. Senior, lead, director and plain manager titles are left out.</p>
+      <p><b>Where.</b> From the posting's location. When that names no place, pay quoted in CAD counts as Canada and USD as the US.</p>
+      <p><b>Visa.</b> Tags come only from the posting's own words, and most postings say nothing. "H-1B employer" means USCIS approved H-1B petitions for that employer; it describes the employer, not the role.</p>
+    </details>
+  </section>
+
+  <section id="v-companies" hidden>
+    <p class="lede">Companies tracked by name. They stay here even when nothing matches, so you can see they were checked.</p>
+    <div class="toolbar" style="max-width:420px"><label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg><input type="search" id="cq" placeholder="Search companies" autocomplete="off"></label></div>
+    <div class="table" style="margin-top:12px"><table id="cotable"></table></div>
+    <div id="manualwrap" hidden>
+      <h2 class="h2">Check these by hand</h2>
+      <p class="lede">Their job boards can't be read automatically.</p>
+      <div class="table"><table id="manualtable"></table></div>
+    </div>
+  </section>
+
+  <section id="v-skipped" hidden>
+    <p class="lede">Sales, marketing and growth roles at your named companies that were read but left off, and why. Look here if you expected to see a role.</p>
+    <div class="toolbar">
+      <label class="search"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.6-3.6"/></svg><input type="search" id="sq" placeholder="Search a company or title" autocomplete="off"></label>
+      <select id="sreason" aria-label="Reason" style="width:auto;max-width:46%;border-radius:999px;padding-block:10px"></select>
+    </div>
+    <div class="table" style="margin-top:12px"><table id="skiptable"></table></div>
+  </section>
+
+  <section id="v-run" hidden>
+    <div class="kv" id="runkv"></div>
+    <h2 class="h2">Why postings were left out</h2>
+    <p class="lede">Every posting read in the last run that isn't on the list, by reason.</p>
+    <div class="bars" id="dropbars"></div>
+  </section>
+
+  <footer>Read from each employer's own job board. Adapted from zshah101's internship engine.</footer>
+</div>
+<div class="scrim" id="scrim"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt = n => Number(n || 0).toLocaleString("en-US");
+const DAY = 864e5;
+const LEVELS = ["Internship","Co-op","New grad","Entry level","Level unclear"];
+const WHERE = ["Canada","US","Remote Canada","Remote"];
+const TIERS = {watchlist:"My watchlist", curated:"Curated startups", discovered:"Other active companies"};
+const store = { get(k){ try { return JSON.parse(localStorage.getItem("gtm:"+k)); } catch(e){ return null; } },
+                set(k,v){ try { localStorage.setItem("gtm:"+k, JSON.stringify(v)); } catch(e){} } };
+
+/* ---- theme ---- */
+const root = document.documentElement;
+const savedTheme = store.get("theme"); if (savedTheme) root.dataset.theme = savedTheme;
+$("#theme").onclick = () => {
+  const dark = root.dataset.theme ? root.dataset.theme === "dark" : !matchMedia("(prefers-color-scheme: light)").matches;
+  root.dataset.theme = dark ? "light" : "dark"; store.set("theme", root.dataset.theme);
+};
+
+/* ---- data: one entry per company + title + level, cities folded in ---- */
+function group(rows){
+  const map = new Map();
+  for (const r of rows){
+    const key = [r.company, r.title, r.level].join("|").toLowerCase();
+    let g = map.get(key);
+    if (!g){ g = {...r, places:[], countries:new Set(), remote:false, date:""}; map.set(key, g); }
+    g.places.push({location:r.location, url:r.url});
+    (r.countries||[]).forEach(c => g.countries.add(c));
+    g.remote = g.remote || r.remote;
+    const d = r.posted_at || r.first_seen || "";
+    if (d > g.date) g.date = d;
+    if (r.first_seen && (!g.first_seen || r.first_seen < g.first_seen)) g.first_seen = r.first_seen;
+    if (!g.salary && r.salary) g.salary = r.salary;
+    if (r.sponsorship && r.sponsorship !== "unknown") g.sponsorship = r.sponsorship;
+    if (r.h1b_approvals > (g.h1b_approvals||0)) g.h1b_approvals = r.h1b_approvals;
+  }
+  return [...map.values()];
+}
+const GROUPS = group(DATA.rows);
+const NOW = Date.now();
+const age = g => { const t = Date.parse(g.date || ""); return t ? (NOW - t) / DAY : 9999; };
+const seenAge = g => { const t = Date.parse(g.first_seen || g.date || ""); return t ? (NOW - t) / DAY : 9999; };
+const whereOf = g => { const w = []; if (g.countries.has("Canada")) w.push("Canada"); if (g.countries.has("US")) w.push("US");
+  if (g.remote && g.countries.has("Canada")) w.push("Remote Canada"); if (g.remote) w.push("Remote"); return w; };
+const FAMILIES = [...new Set(GROUPS.map(g => g.family))].sort();
+
+/* ---- state ---- */
+const fresh = () => ({level:LEVELS.slice(0,4), family:[], where:[], tier:[], visa:"", age:"", q:"", sort:"new"});
+const saved = store.get("filters");
+const state = Object.assign(fresh(), saved && typeof saved === "object" ? saved : {});
+let limit = 100;
+
+function pass(g, skip){
+  if (skip!=="level" && state.level.length && !state.level.includes(g.level)) return false;
+  if (skip!=="family" && state.family.length && !state.family.includes(g.family)) return false;
+  if (skip!=="where" && state.where.length && !whereOf(g).some(w => state.where.includes(w))) return false;
+  if (skip!=="tier" && state.tier.length && !state.tier.includes(g.tier)) return false;
+  if (state.visa==="ok" && (g.sponsorship==="no-sponsorship" || g.sponsorship==="citizens-only")) return false;
+  if (state.visa==="offers" && g.sponsorship!=="offers") return false;
+  if (state.visa==="h1b" && !(g.h1b_approvals > 0)) return false;
+  if (state.age && !(age(g) <= +state.age)) return false;
+  if (state.q){ const hay = (g.company+" "+g.title+" "+g.family+" "+g.places.map(p=>p.location).join(" ")).toLowerCase();
+    if (!state.q.toLowerCase().split(/\s+/).every(w => hay.includes(w))) return false; }
+  return true;
+}
+
+/* ---- filter rail ---- */
+function options(id, key, values, label){
+  const el = $(id);
+  el.innerHTML = values.map(v => `<button class="opt" data-v="${esc(v)}" aria-pressed="${state[key].includes(v)}"><span class="box"></span><span>${esc(label ? label(v) : v)}</span><span class="n"></span></button>`).join("");
+  el.onclick = e => { const b = e.target.closest(".opt"); if (!b) return;
+    const v = b.dataset.v, i = state[key].indexOf(v);
+    i >= 0 ? state[key].splice(i,1) : state[key].push(v);
+    b.setAttribute("aria-pressed", i < 0); changed(); };
+}
+function drawRail(){
+  options("#f-level","level",LEVELS);
+  options("#f-family","family",FAMILIES);
+  options("#f-where","where",WHERE);
+  options("#f-tier","tier",Object.keys(TIERS), v => TIERS[v]);
+  $("#f-visa").value = state.visa; $("#f-age").value = state.age; $("#q").value = state.q; $("#sort").value = state.sort;
+}
+function counts(id, key, test){
+  document.querySelectorAll(`${id} .opt`).forEach(b => {
+    const n = GROUPS.reduce((a,g) => a + (pass(g,key) && test(g,b.dataset.v) ? 1 : 0), 0);
+    b.querySelector(".n").textContent = fmt(n); b.classList.toggle("zero", !n);
+  });
+}
+
+/* ---- the ledger ---- */
+const rel = d => { const t = Date.parse(d||""); if (!t) return ""; const days = Math.floor((NOW - t)/DAY);
+  if (days <= 0) return "Today"; if (days === 1) return "Yesterday"; if (days < 30) return days + " days ago";
+  return new Date(t).toLocaleDateString("en-US",{month:"short",day:"numeric"}); };
+const bucket = g => { const a = age(g); return a < 1 ? "Today" : a < 2 ? "Yesterday" : a < 7 ? "This week" : a < 30 ? "This month" : "Earlier"; };
+const VISA = {"citizens-only":["Citizens or PR only","warn"], "no-sponsorship":["No sponsorship","warn"], "offers":["Sponsorship offered","good"]};
+const arrow = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>`;
+const city = l => String(l||"").split(/[;,]/)[0].trim();
+
+function row(g){
+  const isNew = age(g) <= 1;
+  const tags = [`<span class="tag level">${esc(g.level)}</span>`, `<span class="tag">${esc(g.family)}</span>`];
+  if (g.term) tags.push(`<span class="tag">${esc(g.term)}</span>`);
+  if (g.remote) tags.push(`<span class="tag">${g.countries.has("Canada") && !g.countries.has("US") ? "Remote Canada" : "Remote"}</span>`);
+  if (VISA[g.sponsorship]) tags.push(`<span class="tag ${VISA[g.sponsorship][1]}">${VISA[g.sponsorship][0]}</span>`);
+  if (g.h1b_approvals > 0) tags.push(`<span class="tag" title="${fmt(g.h1b_approvals)} approved H-1B petitions in USCIS employer data">H-1B employer</span>`);
+  if (g.tier === "watchlist") tags.push(`<span class="tag">Watchlist</span>`);
+  if (g.tier === "curated") tags.push(`<span class="tag" title="${esc(g.source_list)}">Curated startup</span>`);
+  const link = p => `<a href="${esc(p.url)}" target="_blank" rel="noopener">`;
+  const places = g.places.length === 1 ? link(g.places[0]) + esc(g.places[0].location) + "</a>"
+    : g.places.length <= 4 ? g.places.map(p => link(p) + esc(city(p.location)) + "</a>").join(", ")
+    : g.places.slice(0,3).map(p => link(p) + esc(city(p.location)) + "</a>").join(", ") + ` and ${g.places.length-3} more`;
+  const why = g.level_reason && g.level_reason.startsWith("posting")
+    ? `<div class="why">Entry level because the ${esc(g.level_reason.replace(/(\d+) yr/, (m,n) => n === "1" ? "1 year" : n + " years"))} of experience.</div>` : "";
+  const url = esc(g.places[0].url);
+  return `<article class="row">
+    <div class="av" aria-hidden="true">${esc((g.company.match(/[A-Za-z0-9]/)||["?"])[0])}</div>
+    <div>
+      <a class="title" href="${url}" target="_blank" rel="noopener">${isNew ? '<i class="dot" title="New in the last 24 hours"></i>' : ""}${esc(g.title)}</a>
+      <div class="sub"><b>${esc(g.company)}</b> · ${places}</div>
+      <div class="tags">${tags.join("")}</div>${why}
+    </div>
+    <div class="side">
+      ${g.salary ? `<span class="pay">${esc(g.salary)}</span>` : ""}
+      <span>${g.posted_at ? "Posted" : "Seen"} ${esc(rel(g.date).toLowerCase())}</span>
+      <a class="go" href="${url}" target="_blank" rel="noopener" aria-label="Open the posting for ${esc(g.title)} at ${esc(g.company)}">${arrow}</a>
+    </div></article>`;
+}
+
+let shown = [];
+function render(){
+  shown = GROUPS.filter(g => pass(g));
+  if (state.sort === "company") shown.sort((a,b) => a.company.localeCompare(b.company) || a.title.localeCompare(b.title));
+  else shown.sort((a,b) => (b.date||"").localeCompare(a.date||""));
+  const page = shown.slice(0, limit);
+  let html = "";
+  if (!shown.length) html = `<div class="ledger"><div class="empty"><b>Nothing matches</b>Loosen a filter, or reset them to see every role.</div></div>`;
+  else if (state.sort === "company") html = `<div class="ledger" style="margin-top:14px">${page.map(row).join("")}</div>`;
+  else {
+    const total = {}; shown.forEach(g => { const b = bucket(g); total[b] = (total[b]||0) + 1; });
+    let cur = null;
+    for (const g of page){ const b = bucket(g);
+      if (b !== cur){ if (cur) html += "</div>"; html += `<div class="day">${b}<span class="num">${fmt(total[b])}</span></div><div class="ledger">`; cur = b; }
+      html += row(g); }
+    html += "</div>";
+  }
+  $("#list").innerHTML = html;
+  $("#more").hidden = shown.length <= limit;
+  $("#more").textContent = `Show ${Math.min(100, shown.length - limit)} more`;
+  const postings = shown.reduce((n,g) => n + g.places.length, 0);
+  $("#count").textContent = `${fmt(shown.length)} role${shown.length===1?"":"s"}` + (postings > shown.length ? ` across ${fmt(postings)} postings` : "");
+  counts("#f-level","level",(g,v)=>g.level===v); counts("#f-family","family",(g,v)=>g.family===v);
+  counts("#f-where","where",(g,v)=>whereOf(g).includes(v)); counts("#f-tier","tier",(g,v)=>g.tier===v);
+}
+function changed(){ limit = 100; store.set("filters", state); render(); }
+
+$("#q").oninput = e => { state.q = e.target.value.trim(); changed(); };
+$("#f-visa").onchange = e => { state.visa = e.target.value; changed(); };
+$("#f-age").onchange = e => { state.age = e.target.value; changed(); };
+$("#sort").onchange = e => { state.sort = e.target.value; changed(); };
+$("#more").onclick = () => { limit += 100; render(); };
+$("#reset").onclick = () => { Object.assign(state, fresh()); drawRail(); changed(); };
+const sheet = open => { $("#rail").classList.toggle("open", open); $("#scrim").classList.toggle("open", open); };
+$("#openFilters").onclick = () => sheet(true); $("#closeFilters").onclick = () => sheet(false); $("#scrim").onclick = () => sheet(false);
+$("#csv").onclick = () => {
+  const head = ["Company","Title","Role","Level","Term","Location","Country","Remote","Pay","Visa","Posted","First seen","Link"];
+  const q = v => `"${String(v ?? "").replace(/"/g,'""')}"`;
+  const lines = [head.map(q).join(",")];
+  for (const g of shown) for (const p of g.places)
+    lines.push([g.company,g.title,g.family,g.level,g.term,p.location,[...g.countries].join(" / "),g.remote?"yes":"",g.salary,g.sponsorship==="unknown"?"":g.sponsorship,(g.posted_at||"").slice(0,10),(g.first_seen||"").slice(0,10),p.url].map(q).join(","));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.join("\n")], {type:"text/csv"})); a.download = "gtm-roles.csv"; a.click();
+};
+
+/* ---- hero ---- */
+const S = DATA.stats || {};
+const base = GROUPS.filter(g => g.level !== "Level unclear");
+const nCanada = base.filter(g => g.countries.has("Canada")).length;
+const nNew = base.filter(g => age(g) <= 1).length;
+const nIntern = base.filter(g => g.level === "Internship" || g.level === "Co-op").length;
+const nGrad = base.filter(g => g.level === "New grad").length;
+const nCos = new Set(base.map(g => g.company)).size;
+$("#headline").innerHTML = `${fmt(base.length)} early-career GTM roles. <em>${fmt(nCanada)} in Canada.</em>`;
+const quick = [
+  ["New in 24 hours", nNew, s => { s.age = "1"; }],
+  ["Internships and co-ops", nIntern, s => { s.level = ["Internship","Co-op"]; }],
+  ["New grad", nGrad, s => { s.level = ["New grad"]; }],
+  ["In Canada", nCanada, s => { s.where = ["Canada"]; }],
+  ["Companies hiring", nCos, null],
+];
+$("#stats").innerHTML = quick.map(([l,n,f],i) => f ? `<button class="stat" data-i="${i}"><b>${fmt(n)}</b>${l}</button>` : `<span class="stat"><b>${fmt(n)}</b>${l}</span>`).join("");
+$("#stats").onclick = e => { const b = e.target.closest("button.stat"); if (!b) return;
+  Object.assign(state, fresh()); quick[+b.dataset.i][2](state); drawRail(); changed(); show("roles");
+  $("#views").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block:"start"}); };
+(() => { const t = Date.parse(S.generated_at || ""); if (!t){ $("#updated").textContent = "Not run yet"; $("#live").classList.add("stale"); return; }
+  const mins = Math.max(0, Math.round((NOW - t)/6e4));
+  $("#updated").textContent = "Updated " + (mins < 1 ? "just now" : mins < 60 ? mins + " min ago" : mins < 2880 ? Math.round(mins/60) + " hr ago" : Math.round(mins/1440) + " days ago");
+  $("#updated").title = new Date(t).toLocaleString();
+  if (mins > 360) $("#live").classList.add("stale"); })();
+
+/* ---- views ---- */
+const VIEWS = [["roles","Roles",base.length],["companies","Tracked companies",DATA.companies.length],["skipped","Left out",(DATA.not_listed||[]).length],["run","Last run",null]];
+$("#views").innerHTML = VIEWS.map(([k,l,n]) => `<button class="view" role="tab" data-v="${k}" aria-selected="false">${l}${n==null?"":`<span class="num">${fmt(n)}</span>`}</button>`).join("");
+function show(v){ if (!VIEWS.some(x => x[0]===v)) v = "roles";
+  VIEWS.forEach(([k]) => { $("#v-"+k).hidden = k !== v; });
+  document.querySelectorAll(".view").forEach(b => b.setAttribute("aria-selected", b.dataset.v === v));
+  if (location.hash.slice(1) !== v) history.replaceState(null, "", "#" + v); }
+$("#views").onclick = e => { const b = e.target.closest(".view"); if (b) show(b.dataset.v); };
+addEventListener("hashchange", () => show(location.hash.slice(1)));
+
+/* ---- tracked companies ---- */
+function drawCompanies(){
+  const q = $("#cq").value.trim().toLowerCase();
+  const rows = DATA.companies.filter(c => !q || c.name.toLowerCase().includes(q));
+  $("#cotable").innerHTML = `<thead><tr><th>Company</th><th class="num">Matching</th><th class="num">Roles read</th><th>Status</th></tr></thead><tbody>` +
+    rows.map(c => `<tr><td>${c.careers_url ? `<a href="${esc(c.careers_url)}" target="_blank" rel="noopener">${esc(c.name)}</a>` : esc(c.name)} <span class="muted">· ${c.tier==="watchlist" ? "Watchlist" : "Curated"}</span></td>
+      <td class="num">${c.listed ? fmt(c.listed) : '<span class="muted">0</span>'}</td><td class="num">${fmt(c.total)}</td>
+      <td>${!c.ok ? `<span class="tag warn">Could not read</span>` : c.listed ? "Hiring at your level" : c.gtm ? `<span class="muted">${fmt(c.gtm)} sales or marketing role${c.gtm===1?"":"s"}, none early-career</span>` : `<span class="muted">No sales or marketing roles open</span>`}</td></tr>`).join("") + "</tbody>";
+}
+$("#cq").oninput = drawCompanies; drawCompanies();
+if ((DATA.manual||[]).length){
+  $("#manualwrap").hidden = false;
+  $("#manualtable").innerHTML = `<thead><tr><th>Company</th><th>Why</th></tr></thead><tbody>` + DATA.manual.map(m =>
+    `<tr><td>${m.careers_url ? `<a href="${esc(m.careers_url)}" target="_blank" rel="noopener">${esc(m.name)}</a>` : esc(m.name)}</td><td class="muted">${esc(m.why)}</td></tr>`).join("") + "</tbody>";
+}
+
+/* ---- left out ---- */
+const SKIP = DATA.not_listed || [];
+const plain = r => ({"senior title":"Senior title","manager title":"Manager title","adjacent role":"Adjacent role (success, partnerships, solutions)",
+  "outside US/Canada":"Outside the US and Canada","no country stated":"No country stated","engineering role":"Engineering role",
+  "unpaid or commission-only":"Unpaid or commission-only","segment title, no experience stated":"Enterprise or strategic segment",
+  "senior title mentioning interns":"Senior title"}[r] || r.replace(/^posting asks for (\d+)\+ yr$/, "Asks for $1+ years").replace(/^posting asks.*$/, "Asks for too much experience"));
+const reasonKey = r => /^posting asks/.test(r) ? "Asks for 3+ years" : plain(r);
+const REASONS = [...new Set(SKIP.map(r => reasonKey(r.reason)))].sort();
+$("#sreason").innerHTML = `<option value="">Any reason</option>` + REASONS.map(r => `<option>${esc(r)}</option>`).join("");
+function drawSkip(){
+  const q = $("#sq").value.trim().toLowerCase(), why = $("#sreason").value;
+  const rows = SKIP.filter(r => (!why || reasonKey(r.reason) === why) && (!q || (r.company+" "+r.title).toLowerCase().includes(q)));
+  $("#skiptable").innerHTML = `<thead><tr><th>Company</th><th>Title</th><th>Location</th><th>Why</th></tr></thead><tbody>` +
+    rows.slice(0,500).map(r => `<tr><td>${esc(r.company)}</td><td><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></td><td class="muted">${esc(r.location)}</td><td class="muted">${esc(plain(r.reason))}</td></tr>`).join("") +
+    (rows.length > 500 ? `<tr><td colspan="4" class="muted">Showing the first 500 of ${fmt(rows.length)}. Search to narrow it down.</td></tr>` : "") +
+    (!rows.length ? `<tr><td colspan="4" class="muted">Nothing matches.</td></tr>` : "") + "</tbody>";
+}
+$("#sq").oninput = drawSkip; $("#sreason").onchange = drawSkip; drawSkip();
+
+/* ---- last run ---- */
+const list = o => Object.entries(o||{}).sort((a,b) => b[1]-a[1]).map(([k,v]) => `${esc(k)} <span class="num muted">${fmt(v)}</span>`).join(" · ") || "None";
+const kv = (k,v) => `<div class="k">${k}</div><div class="v">${v}</div>`;
+$("#runkv").innerHTML = [
+  kv("Finished", S.generated_at ? esc(new Date(S.generated_at).toLocaleString()) : "Never"),
+  kv("Took", S.duration_seconds ? `<span class="num">${Math.round(S.duration_seconds)}</span> seconds` : ""),
+  kv("Job boards read", `<span class="num">${fmt(S.boards_fetched)}</span> of <span class="num">${fmt(S.boards_total)}</span>` + (S.boards_failed ? ` · <span class="num">${fmt(S.boards_failed)}</span> failed` : "") + (S.boards_skipped ? ` · <span class="num">${fmt(S.boards_skipped)}</span> skipped after repeated failures` : "")),
+  kv("Postings read", `<span class="num">${fmt(S.postings_read)}</span>`),
+  kv("Postings listed", `<span class="num">${fmt(S.roles_open)}</span> · <span class="num">${fmt(S.roles_new)}</span> new this run`),
+  kv("Active employers", `<span class="num">${fmt(S.boards_active)}</span> boards`),
+  kv("Boards set aside", list(S.inactive_reasons)),
+  kv("By level", list(S.by_level)), kv("By role", list(S.by_family)), kv("By country", list(S.by_country)),
+].join("");
+(() => { const d = Object.entries(S.drops||{}).sort((a,b) => b[1]-a[1]); const max = d.length ? d[0][1] : 1;
+  const label = k => ({"not a tracked role family":"Not a sales, marketing or growth role","excluded function":"Excluded function (recruiting, legal, finance, design, retail)","posting asks":"Asks for 3+ years"}[k] || plain(k));
+  $("#dropbars").innerHTML = d.map(([k,v]) => `<div class="bar"><span>${esc(label(k))}</span><i style="width:${Math.max(.4, v/max*100)}%"></i><span class="num muted">${fmt(v)}</span></div>`).join("") || `<p class="muted">No run recorded yet.</p>`; })();
+
+drawRail(); render(); show(location.hash.slice(1) || "roles");
+</script>
+</body>
+</html>

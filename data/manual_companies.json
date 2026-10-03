@@ -1,0 +1,177 @@
+[
+ {
+  "name": "Shopify",
+  "careers_url": "https://www.shopify.com/careers",
+  "why": "Runs its own careers site, not a standard job board."
+ },
+ {
+  "name": "IBM",
+  "careers_url": "https://www.ibm.com/careers/search",
+  "why": "Runs its own careers site, not a standard job board."
+ },
+ {
+  "name": "Sage",
+  "careers_url": "https://www.sage.com/en-ca/company/careers/",
+  "why": "The job board for Sage (accounting software) was not found. The one in the original list belonged to a different company."
+ },
+ {
+  "name": "Willow",
+  "careers_url": "https://willowvoice.com/careers",
+  "why": "Posts on Y Combinator's job board, which the tracker cannot read."
+ },
+ {
+  "name": "Revolut",
+  "careers_url": "https://www.revolut.com/careers/",
+  "why": "Runs its own careers site. Its Workable board is empty."
+ },
+ {
+  "name": "8090",
+  "careers_url": "https://www.8090.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Acuity Health",
+  "careers_url": "https://acuityhealth.io/",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "alephneuro",
+  "careers_url": "https://alephneuro.com/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Alloy Robotics",
+  "careers_url": "https://app.dover.com/jobs/usealloy",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Arcanist",
+  "careers_url": "https://www.tryarcanist.com/hiring",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Brainforge AI",
+  "careers_url": "https://brainforge.ai/careers/",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "CloudEagle.ai",
+  "careers_url": "https://www.cloudeagle.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Crunched",
+  "careers_url": "https://www.usecrunched.com/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Dub",
+  "careers_url": "https://dub.co/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Enzo Health",
+  "careers_url": "https://www.enzo.health/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Happenstance",
+  "careers_url": "https://happenstance.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Indices",
+  "careers_url": "https://indices.io/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Initio",
+  "careers_url": "https://careers.initiointelligence.com/",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Moolaah Finance",
+  "careers_url": "https://moolaah.finance/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "myStoria",
+  "careers_url": "https://wellfound.com/jobs/3651273-frontend-full-stack-engineer",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "neosigma ai",
+  "careers_url": "https://neosigma.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Odin Dynamics",
+  "careers_url": "https://odindynamics.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Photon Health",
+  "careers_url": "https://photonhealth.com/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Port",
+  "careers_url": "https://www.port.io/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "PostQ",
+  "careers_url": "https://postq.dev/careers#open-roles",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Primitive Labs",
+  "careers_url": "https://primitivelabs.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "RisingWave",
+  "careers_url": "https://risingwave.com/",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Slash",
+  "careers_url": "https://www.slash.com/company/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "SomaPix",
+  "careers_url": "https://somapix.com/growth-partner",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Structify",
+  "careers_url": "https://www.structify.ai/careers",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Sudowrite",
+  "careers_url": "https://sudowrite.com/jobs/mobile",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Tandem Intelligence",
+  "careers_url": "https://tandem-ai-partner.notion.site/Tandem-Intelligence-Inc-Careers-38fcf5eea9eb801696cbc45387140347",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Tesana AI",
+  "careers_url": "https://tesana.ai/en/about",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Watchtower Labs",
+  "careers_url": "https://www.watchtowerlabs.ai/",
+  "why": "From the Ben Lang startup list. Its job board was not found on a service the tracker can read."
+ },
+ {
+  "name": "Windmill",
+  "careers_url": "https://jobs.ashbyhq.com/windmill",
+  "why": "From the Ben Lang startup list. Its Ashby board could not be read."
+ }
+]

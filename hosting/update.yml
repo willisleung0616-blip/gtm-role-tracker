@@ -1,0 +1,73 @@
+name: Update tracker
+
+# Reads every job board, rebuilds the dashboard and publishes it to GitHub Pages.
+# Nothing is committed back to the repository: the run's memory (which roles it
+# has already seen, when it first saw them) travels between runs in a cache.
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"   # every 30 minutes; off the hour, where GitHub's queue is shorter
+  workflow_dispatch:           # the "Run workflow" button on the Actions tab
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: tracker
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Restore what earlier runs remembered
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: tracker-state-${{ github.run_id }}
+          restore-keys: tracker-state-
+
+      - name: Put the remembered state in place
+        run: |
+          mkdir -p state
+          cp -f state/*.json data/ 2>/dev/null || echo "No earlier state: this is a first run."
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Read job boards and build the dashboard
+        run: python run.py update
+
+      - name: Keep the state for the next run
+        if: always()
+        run: |
+          mkdir -p state
+          cp -f data/gtm_*.json data/health.json state/ 2>/dev/null || true
+
+      - uses: actions/cache/save@v4
+        if: always()
+        with:
+          path: state
+          key: tracker-state-${{ github.run_id }}
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

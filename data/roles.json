@@ -1,0 +1,56 @@
+{
+  "_readme": "This file decides WHICH roles the tracker lists. Every pattern is a case-insensitive regular expression tested against the job TITLE. Edit here to widen or narrow the list; no Python changes needed. Run `python3 -m pytest tests/test_roles.py` after editing. 'engineering' marks titles that are engineering jobs on a growth or marketing team; they are only listed when they match the GTM Engineering family.",
+  "exclude": "\\b(?:recruit\\w*|talent|sourcer|counsel|legal|paralegal|attorney|compliance|accountant|accounting|payroll|tax|finance|financial|treasury|designer|design|executive assistant|administrative assistant|product manager|product management|product owner|\\bpm\\b|seasonal|leasing|residential|store|boutique|dealership|door[- ]to[- ]door|canvass\\w*|commissions?|compensation|ambassador|nurse|teacher|physician|therapist|driver|warehouse|cashier|barista|technician)\\b",
+  "adjacent": "\\b(?:solutions? (?:engineer\\w*|architect\\w*|consultant)|sales engineer\\w*|forward[- ]deployed|technical account manage\\w*|customer success|customer support|customer experience|customer operations|support specialist|implementation|partner(?:ship)?s?|alliances|public sector|analyst relations|communications|public relations|\\bpr\\b)\\b",
+  "families": [
+    {
+      "key": "product_marketing",
+      "label": "Product Marketing",
+      "pattern": "\\b(?:product marketing|product marketer|\\bpmm\\b|solutions? marketing|portfolio marketing)\\b"
+    },
+    {
+      "key": "sales",
+      "label": "Sales",
+      "pattern": "\\b(?:account executive|\\bae\\b|\\bsdr\\b|\\bbdr\\b|sales development|business development rep\\w*|sales rep\\w*|inside sales|sales associate|sales manager|sales consultant|sales specialist)\\b"
+    },
+    {
+      "key": "gtm_engineering",
+      "label": "GTM Engineering",
+      "pattern": "\\b(?:gtm (?:\\w+ )?engineer\\w*|gtme|go[- ]to[- ]market engineer\\w*|growth engineer\\w*|marketing (?:engineer\\w*|technolog\\w*|developer)|revenue engineer\\w*|martech|(?:software|web|full[- ]?stack) (?:engineer|developer)[\\s,(\\-–—]+(?:gtm|growth)|engineer\\w*[\\s,(\\-–—]+(?:gtm|go[- ]to[- ]market))\\b"
+    },
+    {
+      "key": "growth_marketing",
+      "label": "Growth Marketing",
+      "pattern": "\\b(?:growth market\\w*|marketing growth|growth (?:&|and) marketing|demand gen\\w*|lead gen\\w*|performance market\\w*|lifecycle market\\w*|acquisition market\\w*|user acquisition|paid (?:social|media|search|acquisition)|\\bseo\\b|\\bsem\\b|crm marketing|email marketing|digital marketing)\\b"
+    },
+    {
+      "key": "gtm_growth",
+      "label": "GTM & Growth",
+      "pattern": "\\b(?:gtm|go[- ]to[- ]market|growth|revenue (?:operations|strategy)|revops|sales (?:operations|strategy|enablement))\\b"
+    },
+    {
+      "key": "sales",
+      "label": "Sales",
+      "pattern": "\\b(?:sales|account manager|account management|business development)\\b"
+    },
+    {
+      "key": "marketing",
+      "label": "Marketing (other)",
+      "pattern": "\\b(?:marketing|marketer)\\b"
+    }
+  ],
+  "levels": {
+    "intern": "\\b(?:intern|interns|internship|co[\\s-]?op|cooperative education|working student|summer analyst|summer associate)\\b",
+    "new_grad": "\\b(?:new[- ]grad(?:uate)?s?|recent grad(?:uate)?s?|university grad(?:uate)?s?|college grad(?:uate)?s?|early[- ]career|early in career|campus hire|graduate (?:program|programme|scheme|rotation\\w*)|rotational (?:program|associate|analyst)|graduate(?! (?:school|studies|admissions|student|medical|nurse)))\\b",
+    "entry": "\\b(?:junior|jr|entry[- ]level|associate(?! (?:director|vice|vp|partner|general))|coordinator|assistant|apprentice|trainee|representative|rep|\\bsdr\\b|\\bbdr\\b|sales development|(?:i|1)\\s*$)\\b",
+    "entry_blockers": "\\b(?:senior associate|sr\\.? associate)\\b",
+    "senior_exempt": "\\b(?:lead[- ]gen\\w*|account manage\\w*|leadership development|lead development)\\b",
+    "hard_senior": "\\b(?:senior|sr|staff|principal|director|head|vp|avp|rvp|svp|vice president|chief|cmo|cro|founding|lead|leader|expert|architect|ii|iii|iv|[2-5]\\s*$)\\b",
+    "soft_senior": "\\b(?:manager|enterprise|strategic|majors?|named accounts?|mid[- ]market)\\b",
+    "entry_strong": "\\b(?:junior|jr|entry[- ]level|associate(?! (?:director|vice|vp|partner|general))|(?:i|1)\\s*$)\\b"
+  },
+  "experience": {
+    "entry_max_years": 2
+  },
+  "engineering": "\\b(?:software|engineer\\w*|developer|scientist|architect)\\b"
+}

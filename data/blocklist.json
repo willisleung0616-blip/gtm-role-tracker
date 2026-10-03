@@ -1,0 +1,21 @@
+{
+  "companies": [
+    "construction resources",
+    "cortland",
+    "cpi security",
+    "leavitt group",
+    "mizzen+main",
+    "monster energy",
+    "sunsource",
+    "tecovas"
+  ],
+  "name_contains": [
+    "staffing",
+    "talent solutions",
+    "recruiting agency",
+    "manpower",
+    "workforce solutions",
+    "placement services",
+    "temp agency"
+  ]
+}
